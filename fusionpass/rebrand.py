@@ -113,6 +113,11 @@ edit(f'{K}/features/settings/SettingsRootPage.kt', [('"https://nuvio.tv/privacy-
 edit(f'{K}/features/auth/AuthScreen.kt', [('"https://nuvio.tv/terms"', '"https://fusionpass.shop/terms"')])
 edit(f'{K}/core/auth/DeviceLinkAuthRepository.kt', [('"https://nuvio.tv/link"', '"https://sync.fusionpass.shop/link"')])
 
+# 7. Names a user can see outside the string resources.
+edit(f'{K}/features/settings/TrackingProviderCards.kt', [('    NUVIO("Nuvio"),', '    NUVIO("Fusion Pass"),')])
+edit(f'{K}/features/library/LibraryRepository.kt', [('DEFAULT_LOCAL_LIBRARY_TAB_TITLE = "Nuvio Library"', 'DEFAULT_LOCAL_LIBRARY_TAB_TITLE = "Library"')])
+edit(f'{K}/core/auth/DeviceSessionRegistration.kt', [('CLIENT_NAME = "Nuvio Mobile"', 'CLIENT_NAME = "Fusion Pass Mobile"')])
+
 print('rebrand: ok,', len(changed), 'changes')
 for c in changed[:40]:
     print('  ', c)
