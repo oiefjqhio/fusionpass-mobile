@@ -147,6 +147,17 @@ private data class PlaybackSearchRow(""", """    // Fusion Pass: pages removed f
 private data class PlaybackSearchRow("""),
 ])
 
+# 9. Audio defaults to English (owner: "we should be defaulting english always"). Nuvio defaults to the
+#    device language; on a Filipino-locale phone that falls back to the file's default track, which on
+#    dual-audio releases can be Spanish. A language the user picks in Settings still wins.
+P = f'{K}/features/player/PlayerSettingsRepository.kt'
+edit(P, [
+    ('    val preferredAudioLanguage: String = AudioLanguageOption.DEVICE,', '    val preferredAudioLanguage: String = "en", // Fusion Pass: English by default'),
+    ('    private var preferredAudioLanguage = AudioLanguageOption.DEVICE\n', '    private var preferredAudioLanguage = "en" // Fusion Pass: English by default\n'),
+    ('        preferredAudioLanguage = AudioLanguageOption.DEVICE\n        secondaryPreferredAudioLanguage = null', '        preferredAudioLanguage = "en" // Fusion Pass\n        secondaryPreferredAudioLanguage = null'),
+    ('            normalizeLanguageCode(PlayerSettingsStorage.loadPreferredAudioLanguage())\n                ?: AudioLanguageOption.DEVICE', '            normalizeLanguageCode(PlayerSettingsStorage.loadPreferredAudioLanguage())\n                ?: "en" // Fusion Pass'),
+])
+
 print('rebrand: ok,', len(changed), 'changes')
 for c in changed[:40]:
     print('  ', c)
