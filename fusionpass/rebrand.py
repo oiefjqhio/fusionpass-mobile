@@ -118,6 +118,35 @@ edit(f'{K}/features/settings/TrackingProviderCards.kt', [('    NUVIO("Nuvio"),',
 edit(f'{K}/features/library/LibraryRepository.kt', [('DEFAULT_LOCAL_LIBRARY_TAB_TITLE = "Nuvio Library"', 'DEFAULT_LOCAL_LIBRARY_TAB_TITLE = "Library"')])
 edit(f'{K}/core/auth/DeviceSessionRegistration.kt', [('CLIENT_NAME = "Nuvio Mobile"', 'CLIENT_NAME = "Fusion Pass Mobile"')])
 
+# 8. No tracking services (Trakt/Simkl need our own API apps; owner chose to hide them). Library and
+#    watch progress stay on our sync server. Settings search must not reopen any hidden page.
+edit(f'{K}/features/settings/SettingsRootPage.kt', [
+    ("""                    SettingsGroupDivider(isTablet = isTablet)
+                    SettingsNavigationRow(
+                        title = stringResource(Res.string.compose_settings_page_tracking),
+                        description = stringResource(Res.string.compose_settings_root_tracking_description),
+                        icon = Icons.Default.Sync,
+                        isTablet = isTablet,
+                        onClick = onTrackingClick,
+                    )
+""", """                    // Fusion Pass: tracking services row removed
+"""),
+])
+edit(f'{K}/features/settings/SettingsSearch.kt', [
+    ("""    return entries
+}
+
+private data class PlaybackSearchRow(""", """    // Fusion Pass: pages removed from the settings root stay out of search too.
+    val hidden = setOf(SettingsPage.ContentDiscovery, SettingsPage.Integrations, SettingsPage.TraktAuthentication)
+    return entries.filterNot { e ->
+        val p = (e.target as? SettingsSearchTarget.Page)?.page
+        p != null && (p in hidden || p.parentPage in hidden)
+    }
+}
+
+private data class PlaybackSearchRow("""),
+])
+
 print('rebrand: ok,', len(changed), 'changes')
 for c in changed[:40]:
     print('  ', c)
