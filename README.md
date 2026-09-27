@@ -1,3 +1,5 @@
+> **Fusion Pass** (Android) is a fork of Nuvio Mobile (GPL-3.0). See [`fusionpass/README.md`](fusionpass/README.md) for what changed and how it is built.
+
 <div align="center">
 
   <img src="https://nuvio.tv/assets/nuvio-app-logo-wordmark.webp" alt="Nuvio" width="320" />
