@@ -46,9 +46,9 @@ data class PlayerSettingsUiState(
     val externalPlayerForwardSubtitles: Boolean = false,
     val externalPlayerSendSkipSegments: Boolean = false,
     val externalPlayerId: String? = ExternalPlayerPlatform.defaultPlayerId(),
-    val preferredAudioLanguage: String = "en", // Fusion Pass: English by default
+    val preferredAudioLanguage: String = AudioLanguageOption.FP_AUTO, // Fusion Pass
     val secondaryPreferredAudioLanguage: String? = null,
-    val preferredSubtitleLanguage: String = SubtitleLanguageOption.NONE,
+    val preferredSubtitleLanguage: String = "en", // Fusion Pass: English subtitles on
     val secondaryPreferredSubtitleLanguage: String? = null,
     val subtitleStyle: SubtitleStyleState = SubtitleStyleState.DEFAULT,
     val streamReuseLastLinkEnabled: Boolean = false,
@@ -116,9 +116,9 @@ object PlayerSettingsRepository {
     private var externalPlayerForwardSubtitles = false
     private var externalPlayerSendSkipSegments = false
     private var externalPlayerId: String? = ExternalPlayerPlatform.defaultPlayerId()
-    private var preferredAudioLanguage = "en" // Fusion Pass: English by default
+    private var preferredAudioLanguage = AudioLanguageOption.FP_AUTO // Fusion Pass
     private var secondaryPreferredAudioLanguage: String? = null
-    private var preferredSubtitleLanguage = SubtitleLanguageOption.NONE
+    private var preferredSubtitleLanguage = "en" // Fusion Pass
     private var secondaryPreferredSubtitleLanguage: String? = null
     private var subtitleStyle = SubtitleStyleState.DEFAULT
     private var streamReuseLastLinkEnabled = false
@@ -191,9 +191,9 @@ object PlayerSettingsRepository {
         externalPlayerForwardSubtitles = false
         externalPlayerSendSkipSegments = false
         externalPlayerId = ExternalPlayerPlatform.defaultPlayerId()
-        preferredAudioLanguage = "en" // Fusion Pass
+        preferredAudioLanguage = AudioLanguageOption.FP_AUTO // Fusion Pass
         secondaryPreferredAudioLanguage = null
-        preferredSubtitleLanguage = SubtitleLanguageOption.NONE
+        preferredSubtitleLanguage = "en" // Fusion Pass
         secondaryPreferredSubtitleLanguage = null
         subtitleStyle = SubtitleStyleState.DEFAULT
         streamReuseLastLinkEnabled = false
@@ -264,12 +264,12 @@ object PlayerSettingsRepository {
             ?: ExternalPlayerPlatform.defaultPlayerId()
         preferredAudioLanguage =
             normalizeLanguageCode(PlayerSettingsStorage.loadPreferredAudioLanguage())
-                ?: "en" // Fusion Pass
+                ?: AudioLanguageOption.FP_AUTO // Fusion Pass
         secondaryPreferredAudioLanguage =
             normalizeLanguageCode(PlayerSettingsStorage.loadSecondaryPreferredAudioLanguage())
         preferredSubtitleLanguage =
             normalizeLanguageCode(PlayerSettingsStorage.loadPreferredSubtitleLanguage())
-                ?: SubtitleLanguageOption.NONE
+                ?: "en" // Fusion Pass
         secondaryPreferredSubtitleLanguage =
             normalizeLanguageCode(PlayerSettingsStorage.loadSecondaryPreferredSubtitleLanguage())
         subtitleStyle = SubtitleStyleState(
