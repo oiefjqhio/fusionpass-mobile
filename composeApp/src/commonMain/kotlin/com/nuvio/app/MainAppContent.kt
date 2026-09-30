@@ -719,23 +719,8 @@ internal fun MainAppContent(
                     }
 
                     is AppDeepLink.AddonInstall -> {
-                        activateTab(AppScreenTab.Settings)
-                        navController.navigate(AddonsSettingsRoute(addonsSettingsTitle)) {
-                            launchSingleTop = true
-                        }
-                        NuvioToastController.show(getString(Res.string.addons_modal_checking_title))
-                        AddonRepository.initialize()
-                        when (val result = AddonRepository.addAddon(deepLink.manifestUrl)) {
-                            is AddAddonResult.Success -> {
-                                NuvioToastController.show(
-                                    getString(Res.string.addons_modal_success_message, result.manifest.name),
-                                )
-                            }
-
-                            is AddAddonResult.Error -> {
-                                NuvioToastController.show(result.message)
-                            }
-                        }
+                        // Fusion Pass: addons are managed by the pass; a stremio:// or nuvio://<host> link
+                        // must not install one or open the hidden addon settings (review 22 F4).
                         AppDeepLinkRepository.markConsumed(deepLink)
                     }
 
