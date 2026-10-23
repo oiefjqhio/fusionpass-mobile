@@ -125,14 +125,7 @@ internal fun LazyListScope.settingsRootContent(
                             onClick = onWatchPartyClick,
                         )
                     }
-                    SettingsGroupDivider(isTablet = isTablet)
-                    SettingsNavigationRow(
-                        title = stringResource(Res.string.compose_settings_page_tracking),
-                        description = stringResource(Res.string.compose_settings_root_tracking_description),
-                        icon = Icons.Default.Sync,
-                        isTablet = isTablet,
-                        onClick = onTrackingClick,
-                    )
+                    // Fusion Pass: tracking services row removed
                 }
             }
         }

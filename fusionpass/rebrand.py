@@ -60,7 +60,7 @@ for f in glob.glob(f'{CR}/drawable/app_icon_*.png'):
     put(f'{OUT}/app_icon_original.png', os.path.splitext(f)[0])
 for f in glob.glob(f'{CR}/drawable/app_logo_wordmark*.png'):
     put(f'{OUT}/app_logo_wordmark.png', os.path.splitext(f)[0])
-edit(f'{RES}/values/colors.xml', [('<color name="app_icon_background">#000000</color>', '<color name="app_icon_background">#6B6CFF</color>')])
+edit(f'{RES}/values/colors.xml', [('<color name="app_icon_background">#000000</color>', '<color name="app_icon_background">#1E1B4B</color>')])  # logo v2 tile
 
 # 2. Visible text: Nuvio -> Fusion Pass in every language.
 for path in glob.glob(f'{CR}/values*/strings.xml') + glob.glob(f'{RES}/values*/strings.xml'):
@@ -222,8 +222,8 @@ drop(f'{K}/features/settings/LicensesAttributionsPage.kt',
 drop(f'{K}/features/settings/SettingsSearch.kt',
      r'        PlaybackSearchRow\("(?:premiumize|torbox)-attribution".*?\n', 'Premiumize/TorBox search rows')
 edit(f'{K}/features/library/LibraryScreen.kt', [
-    ('private fun LibrarySourceSwitch(\n    selectedMode: LibraryViewMode,\n    onModeSelected: (LibraryViewMode) -> Unit,\n    modifier: Modifier = Modifier,\n) {\n',
-     'private fun LibrarySourceSwitch(\n    selectedMode: LibraryViewMode,\n    onModeSelected: (LibraryViewMode) -> Unit,\n    modifier: Modifier = Modifier,\n) {\n    if (true) return // Fusion Pass: no cloud library (debrid accounts)\n'),
+    ('private fun LibrarySourceSwitch(\n    selectedMode: LibraryViewMode,\n    showServers: Boolean,\n    onModeSelected: (LibraryViewMode) -> Unit,\n    modifier: Modifier = Modifier,\n) {\n',
+     'private fun LibrarySourceSwitch(\n    selectedMode: LibraryViewMode,\n    showServers: Boolean,\n    onModeSelected: (LibraryViewMode) -> Unit,\n    modifier: Modifier = Modifier,\n) {\n    if (true) return // Fusion Pass: no cloud library (debrid accounts) or media servers\n'),
 ])
 
 # In-app updates: compare the -fp<N> revision numerically (code review 2026-09-29, report 22 F2).
@@ -231,6 +231,13 @@ edit(f'{K}/features/updater/VersionUtils.kt', [('    private fun comparePrerelea
 
 # Addon-install deep links do nothing: the pass manages the addons (code review 2026-09-29, report 22 F4).
 edit(f'{K}/MainAppContent.kt', [('                    is AppDeepLink.AddonInstall -> {\n                        activateTab(AppScreenTab.Settings)\n                        navController.navigate(AddonsSettingsRoute(addonsSettingsTitle)) {\n                            launchSingleTop = true\n                        }\n                        NuvioToastController.show(getString(Res.string.addons_modal_checking_title))\n                        AddonRepository.initialize()\n                        when (val result = AddonRepository.addAddon(deepLink.manifestUrl)) {\n                            is AddAddonResult.Success -> {\n                                NuvioToastController.show(\n                                    getString(Res.string.addons_modal_success_message, result.manifest.name),\n                                )\n                            }\n\n                            is AddAddonResult.Error -> {\n                                NuvioToastController.show(result.message)\n                            }\n                        }\n                        AppDeepLinkRepository.markConsumed(deepLink)\n                    }', '                    is AppDeepLink.AddonInstall -> {\n                        // Fusion Pass: addons are managed by the pass; a stremio:// or nuvio://<host> link\n                        // must not install one or open the hidden addon settings (review 22 F4).\n                        AppDeepLinkRepository.markConsumed(deepLink)\n                    }')])
+
+# Watch Party (upstream 2026-10): our sync server has no watch-party functions, so the built-in server
+# does not offer it (the settings row and the player button follow this flag).
+edit(f'{K}/core/network/ServerConfiguration.kt', [
+    ('        tvLogin = true,\n        watchParty = true,\n    ),\n    isCustom = false,',
+     '        tvLogin = true,\n        watchParty = false, // Fusion Pass: no watch-party functions on our sync server\n    ),\n    isCustom = false,'),
+])
 
 print('rebrand: ok,', len(changed), 'changes')
 for c in changed[:40]:
